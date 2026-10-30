@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>kappa 扭客</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 版面概念：方格紙實驗紀錄本。單欄閱讀、資料圖表橫跨，鈷藍為實測、琥珀為理論。 */
+:root{
+  --paper:#f4f6f7; --sheet:#ffffff; --ink:#18212b; --muted:#5b6773; --rule:#d9dfe4; --grid:#e7ecef;
+  --measure:#2a55c9; --theory:#c4870f; --alt:#8a3fa0; --soft:#e8eefb;
+  --display:"Noto Serif TC","Songti TC",serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#11161c; --sheet:#171e26; --ink:#e6ebf0; --muted:#97a3ae; --rule:#2b3540; --grid:#1f2830;
+  --measure:#7a9cff; --theory:#e6a83a; --alt:#c983dc; --soft:#1c2740; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#11161c; --sheet:#171e26; --ink:#e6ebf0; --muted:#97a3ae; --rule:#2b3540; --grid:#1f2830;
+  --measure:#7a9cff; --theory:#e6a83a; --alt:#c983dc; --soft:#1c2740; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.8;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px}
+.wrap{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.3;margin:0}
+h2{font-size:clamp(1.5rem,3.4vw,2rem)}
+h3{font-size:1.15rem}
+p{margin:0;max-width:65ch}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.label{font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+a{color:var(--measure)}
+:focus-visible{outline:2px solid var(--measure);outline-offset:2px}
+
+header.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:center;padding-block:24px 40px;border-bottom:2px solid var(--ink)}
+.hero h1{font-size:clamp(1.9rem,5vw,3.1rem);font-weight:900;margin-block:12px 16px}
+.hero h1 em{font-style:normal;color:var(--measure)}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chip{font-family:var(--mono);font-size:.78rem;border:1px solid var(--rule);background:var(--sheet);padding:2px 10px;border-radius:999px;color:var(--muted)}
+.pend{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:16px;display:grid;gap:12px}
+.pend canvas{width:100%;aspect-ratio:1/1;max-width:100%;display:block}
+.pend .row{display:flex;flex-wrap:wrap;gap:6px}
+.pend button{font:inherit;font-size:.85rem;border:1px solid var(--rule);background:var(--paper);color:var(--ink);padding:4px 10px;border-radius:4px;cursor:pointer}
+.pend button[aria-pressed="true"]{background:var(--measure);border-color:var(--measure);color:var(--sheet)}
+.pend .readout{display:flex;justify-content:space-between;gap:12px;font-size:.85rem;color:var(--muted)}
+.pend .readout b{color:var(--ink);font-weight:500}
+
+section{padding-block:48px;border-bottom:1px solid var(--rule);display:grid;gap:20px}
+.sec-head{display:grid;gap:6px}
+.thesis{font-family:var(--display);font-size:clamp(1.15rem,2.6vw,1.45rem);line-height:1.6;max-width:40ch}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:20px;display:grid;gap:10px;align-content:start;min-width:0}
+.eq{font-family:var(--mono);font-size:1.05rem;background:var(--soft);padding:10px 14px;border-radius:4px;overflow-x:auto;white-space:nowrap}
+.eq sup,.eq sub{font-size:.7em}
+.figure{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:16px;min-width:0}
+.figure svg{width:100%;height:auto;display:block}
+.figcap{font-size:.85rem;color:var(--muted);margin-top:8px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.82rem;color:var(--muted);margin-bottom:6px}
+.legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:6px}
+.tbl{overflow-x:auto;background:var(--sheet);border:1px solid var(--rule);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:520px}
+th,td{padding:8px 12px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:500;color:var(--muted);font-size:.8rem}
+td{font-family:var(--mono);font-variant-numeric:tabular-nums}
+td:first-child{font-family:var(--body)}
+.ok{color:var(--measure);font-weight:500}
+.warn{color:var(--theory);font-weight:500}
+.exp-tag{font-family:var(--mono);font-size:.8rem;color:var(--sheet);background:var(--ink);padding:2px 8px;border-radius:3px;justify-self:start}
+.arc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--sheet)}
+.arc div{padding:16px;border-right:1px solid var(--rule);display:grid;gap:4px;min-width:0}
+.arc div:last-child{border-right:0}
+.arc b{font-family:var(--display);font-size:1.05rem}
+.arc small{color:var(--muted);font-size:.85rem;line-height:1.6}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;align-items:end}
+.calc label{display:grid;gap:4px;font-size:.85rem;color:var(--muted)}
+.calc input{font-family:var(--mono);font-size:1rem;padding:8px 10px;border:1px solid var(--rule);border-radius:4px;background:var(--paper);color:var(--ink);width:100%}
+.calc output{font-family:var(--mono);font-size:1.25rem;color:var(--measure)}
+ol.concl{margin:0;padding-left:1.4em;display:grid;gap:10px;max-width:70ch}
+ol.refs{margin:0;padding-left:1.4em;display:grid;gap:8px;font-size:.88rem;color:var(--muted);max-width:80ch;overflow-wrap:anywhere}
+footer{padding-block:32px 0;font-size:.85rem;color:var(--muted);display:grid;gap:6px}
+
+@media (max-width:720px){
+  header.hero{grid-template-columns:1fr}
+  .arc{grid-template-columns:1fr 1fr}
+  .arc div:nth-child(2){border-right:0}
+  .arc div:nth-child(-n+2){border-bottom:1px solid var(--rule)}
+}
+</style>
+
+<div class="wrap">
+<header class="hero">
+  <div>
+    <div class="label">第二十五屆旺宏科學獎 · SA25-782 · 隊伍 kappa 扭客</div>
+    <h1>線材種類與並列方式<br>對扭擺<em>扭力係數 κ</em> 之影響研究</h1>
+    <p>把一根鋅棒吊在線上轉一轉，它會來回擺動。擺得多快，取決於線有多「抗扭」。我們用自製扭擺量出不同線材的扭力係數 κ，原本只想比較材料，卻在換成絲帶後發現理論完全對不上，最後用「雙線並列」模型找到了答案。</p>
+    <div class="meta">
+      <span class="chip">物理與天文學科</span>
+      <span class="chip">高級中等學校組</span>
+      <span class="chip">關鍵字：扭力係數 · 雙線並列 · 聖維南扭轉理論 · 緞帶</span>
+    </div>
+  </div>
+  <div class="pend" aria-label="扭擺俯視模擬">
+    <div class="label">扭擺俯視圖 · 實際週期</div>
+    <canvas id="pend" width="400" height="400" role="img" aria-label="鋅棒繞懸線旋轉擺動的俯視動畫"></canvas>
+    <div class="row" id="pendBtns"></div>
+    <div class="readout"><span>週期 T = <b id="pT" class="num">0.6 s</b></span><span>κ = <b id="pK" class="num"></b> N·m/rad</span></div>
+  </div>
+</header>
+
+<section>
+  <div class="sec-head"><div class="label">研究動機</div><h2>扭秤和彈簧，其實是同一件事</h2></div>
+  <p>高一物理課介紹卡文迪西扭秤時，老師提到扭秤的原理和虎克定律的彈簧幾乎一樣：彈簧是 F = kx，扭秤是 τ = κθ，回復量都和位移成正比。這讓我們好奇：κ 究竟由什麼決定？</p>
+  <p>查資料發現，κ 跟線長、粗細、截面形狀有關，而針對長方形等截面，文獻也有扭轉理論可以預測。但這些公式原本是為金屬條、稜柱等實心材料推導的。我們把它套到扁平的緞帶上，理論和實測竟差了數十倍，這個落差就是本研究的起點。</p>
+</section>
+
+<section>
+  <div class="sec-head"><div class="label">理論基礎</div><h2>三條公式撐起整個研究</h2></div>
+  <div class="cols">
+    <div class="card">
+      <h3>扭擺週期</h3>
+      <div class="eq">T = 2π √(I / κ) &nbsp;⇒&nbsp; κ = 4π²I / T²</div>
+      <p>扭力與角度一次方成正比且反向，所以扭擺是簡諧運動。量出週期 T，配合已知的轉動慣量 I，就能反推 κ。</p>
+    </div>
+    <div class="card">
+      <h3>聖維南扭轉理論</h3>
+      <div class="eq">κ = GJ / L</div>
+      <p>G 是材料的剪切模數，J 是截面的幾何因子。圓線 J = πr⁴/2；寬 w、厚 t 的扁帶修正為 J<sub>eff</sub> ≈ ⅓wt³(1 − 0.63 t/w)。</p>
+    </div>
+    <div class="card">
+      <h3>雙線並列（盪鞦韆結構）</h3>
+      <div class="eq">κ = mgd² / 4L</div>
+      <p>兩條相距 d 的線吊著擺錘，一扭轉線就傾斜、重心上升，由重力提供回復力矩。κ 只和間距 d 的平方有關，與線材材質無關。</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="label">動手算 · κ = 4π²I / T²</div>
+    <div class="calc">
+      <label for="cI">轉動慣量 I（kg·m²）<input id="cI" type="number" step="any" value="3.27e-6"></label>
+      <label for="cT">平均週期 T（s）<input id="cT" type="number" step="any" min="0" value="7"></label>
+      <div><div class="label">扭力係數 κ</div><output id="cK" for="cI cT"></output> <span class="mono" style="color:var(--muted)">N·m/rad</span></div>
+    </div>
+    <p style="font-size:.85rem;color:var(--muted)">預設值是本研究的鋅棒（m = 6.11 g、長 8 cm、直徑 0.6 cm）與 1 cm 絲帶的實測週期。</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="label">實驗方法</div><h2>密封罐裡的扭擺</h2></div>
+  <div class="cols">
+    <div class="card"><h3>裝置</h3><p>塑膠罐加奈米膠封口隔絕氣流，接上透明塑膠管延長高度，線材上端以竹筷固定，下端吊鋅棒。線長固定 50 cm。</p></div>
+    <div class="card"><h3>線材</h3><p>鋼絲（#20 不鏽鋼）、銅線、玉線、繡線（棉線），直徑皆約 1 ± 0.1 mm；聚酯纖維絲帶厚 0.04 至 0.05 cm，五種寬度。</p></div>
+    <div class="card"><h3>量測</h3><p>實驗零先用 Tracker 逐幀追蹤，確認週期穩定後，改用碼錶記錄 10 次完整擺動的總時間，除以 10 得週期，重複觀測取平均。</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="exp-tag">實驗一</span>
+  <div class="sec-head"><h2>線的種類：材料決定一切</h2></div>
+  <p class="thesis">直徑相同時，鋼絲的 κ 比棉線大了約 1600 倍。</p>
+  <div class="figure">
+    <svg id="ch1" viewBox="0 0 640 300" role="img" aria-label="五種線材扭力係數的對數長條圖"></svg>
+    <div class="figcap">圖一 · 各線材的扭力係數 κ（對數刻度，線長 50 cm）</div>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>線種</th><th>平均週期 (s)</th><th>κ (N·m/rad)</th><th>實測 G (N/m²)</th><th>文獻 G (N/m²)</th></tr></thead>
+    <tbody>
+      <tr><td>鋼絲</td><td>0.6</td><td>3.586×10⁻⁴</td><td>1.826×10⁹</td><td>約 7.9×10¹⁰</td></tr>
+      <tr><td>銅線</td><td>0.9</td><td>1.594×10⁻⁴</td><td>8.117×10⁸</td><td>約 4.4×10¹⁰</td></tr>
+      <tr><td>玉線</td><td>5.8</td><td>3.838×10⁻⁶</td><td>1.954×10⁷</td><td>—</td></tr>
+      <tr><td>絲帶（1 cm）</td><td>7</td><td>2.635×10⁻⁶</td><td>3.269×10⁶</td><td>約 10⁸～10⁹</td></tr>
+      <tr><td>棉線</td><td>24</td><td>2.241×10⁻⁷</td><td>1.141×10⁶</td><td>約 10⁷～10⁹</td></tr>
+    </tbody>
+  </table></div>
+  <p>軟硬排序與文獻一致，金屬約是非金屬軟線的 10～100 倍以上。不過實測 G 比文獻低約 40～60 倍，我們推測與市售細線的純度、拉絲與退火等製程改變了微觀結構有關。</p>
+</section>
+
+<section>
+  <span class="exp-tag">實驗二</span>
+  <div class="sec-head"><h2>換成絲帶，理論失靈了</h2></div>
+  <p class="thesis">聖維南理論把最窄的絲帶高估了 67 倍。</p>
+  <div class="tbl"><table>
+    <thead><tr><th>絲帶</th><th>寬度 (cm)</th><th>週期 (s)</th><th>實測 κ</th><th>聖維南理論 κ</th><th>實測 / 理論</th></tr></thead>
+    <tbody id="t2"></tbody>
+  </table></div>
+  <p>所有實測值都遠低於理論，而且寬度越大，偏差越小。和老師討論後我們猜想：絲帶的兩側邊緣也許可以看成兩條並列的線，間距約等於寬度。寬度一大，雙線並列效應就開始主導。</p>
+</section>
+
+<section>
+  <span class="exp-tag">實驗三</span>
+  <div class="sec-head"><h2>兩條線並列：間距的平方</h2></div>
+  <p class="thesis">把兩條線分開 2、3、4 cm 懸吊，κ 隨間距 d 的冪次上升，理論預測 n = 2。</p>
+  <div class="figure">
+    <div class="legend" id="lg3"></div>
+    <svg id="ch3" viewBox="0 0 640 340" role="img" aria-label="四種線材並列間距與扭力係數的雙對數圖"></svg>
+    <div class="figcap">圖二 · 並列間距 d 與實測 κ（雙對數），虛線為 κ = mgd²/4L</div>
+  </div>
+  <div class="cols" id="pw" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))"></div>
+  <p>玉線、棉線這類軟線的 κ 幾乎落在理論線上，表示重力的幾何效應主導。棉線在小間距時自身扭力不可忽略，把斜率拉低；鋼絲與銅線很硬，自身扭轉與抗彎都會額外貢獻，加上週期只有 0.1～0.4 秒、計時誤差被放大，冪次偏高。每種線只有三個間距，冪次僅供看趨勢。</p>
+</section>
+
+<section>
+  <span class="exp-tag">實驗四</span>
+  <div class="sec-head"><h2>把絲帶當成兩條線</h2></div>
+  <p class="thesis">令間距 d = 絲帶寬度 w，實測與理論的比值從 0.015～0.21 收斂到 0.72～1.59。</p>
+  <div class="figure">
+    <div class="legend">
+      <span><i style="background:var(--measure)"></i>實測 κ</span>
+      <span><i style="background:var(--theory)"></i>聖維南理論</span>
+      <span><i style="background:var(--alt)"></i>雙線並列理論</span>
+    </div>
+    <svg id="ch4" viewBox="0 0 640 340" role="img" aria-label="絲帶寬度與扭力係數的雙對數圖，比較兩種理論"></svg>
+    <div class="figcap">圖三 · 絲帶寬度 w 與 κ（雙對數）。雙線並列模型貼近實測，聖維南理論整條線高出一截。</div>
+  </div>
+  <div class="cols">
+    <div class="card"><div class="label">窄帶 · w ≤ 1 cm</div><h3>比值 0.72、0.88</h3><p>絲帶整體性強，兩側邊緣無法完全獨立，等效間距比寬度小，實測偏低。</p></div>
+    <div class="card"><div class="label">中寬 · w = 1.5 cm</div><h3>比值 1.04</h3><p>結構整體性與材料剛性的影響剛好抵消，與模型幾乎完全吻合。</p></div>
+    <div class="card"><div class="label">寬帶 · w ≥ 2.5 cm</div><h3>比值 1.43、1.59</h3><p>絲帶本身的扭轉剛性開始額外貢獻回復力矩，實測偏高。</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="label">綜合討論</div><h2>從材料主導，走向幾何主導</h2></div>
+  <div class="arc">
+    <div><span class="label">實驗一</span><b>材料主導</b><small>單線時剪切模數 G 決定 κ，鋼絲與棉線差近三個數量級。</small></div>
+    <div><span class="label">實驗二</span><b>出現殘差</b><small>絲帶寬度讓聖維南理論系統性偏離，暗示另有幾何效應。</small></div>
+    <div><span class="label">實驗三</span><b>幾何接管</b><small>並列間距 d 讓 κ 依 d² 上升，軟線最貼近理論。</small></div>
+    <div><span class="label">實驗四</span><b>模型統一</b><small>絲帶等效為雙線並列，理論與實測吻合大幅提升。</small></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="label">結論</div><h2>研究發現</h2></div>
+  <ol class="concl">
+    <li>用碼錶量扭擺週期、搭配轉動慣量公式，就能有效反推線材的扭力係數 κ。</li>
+    <li>五種線材的 κ 與剪切模數 G 排序符合材料硬度，但實測 G 比文獻低約 40～60 倍，推測與製程造成的非均質結構有關。</li>
+    <li>聖維南理論無法描述絲帶的扭擺，偏差隨寬度增大而系統性縮小，表示存在理論之外的幾何效應。</li>
+    <li>四種線材並列時冪次 n 落在 1.40～3.09，分布於理論值 2 附近，支持間距是並列線材扭力的主要決定因素。</li>
+    <li>把絲帶視為雙線並列結構後，理論與實測的比值收斂到 0.72～1.59，驗證了「絲帶兩側邊緣並列效應」的假說。</li>
+    <li>一個小小的材料替換（把線換成絲帶），就讓熟悉的古典物理出現質性不同的行為，這是本研究最有趣的收穫。</li>
+  </ol>
+</section>
+
+<section>
+  <div class="sec-head"><div class="label">參考資料</div></div>
+  <ol class="refs">
+    <li>吳定駩、王佩茹、朱紹華（2022）。義大利麵之扭力係數與組合構造相關性研究。中華民國第 62 屆中小學科學展覽會。<a href="https://twsf.ntsec.gov.tw/activity/race-1/62/pdf/NPHSF2022-080111.pdf">連結</a></li>
+    <li>葉乃綱（2005）。纏繞式複合材料桁架圓桿之強度分析［碩士論文，國立陽明交通大學］。<a href="https://ir.lib.nycu.edu.tw/bitstream/11536/42035/3/952303.pdf">連結</a></li>
+    <li>胡晶、李曉星、張天敏、韓華渠（2009）。碳纖維複合材料傳動軸扭轉性能優化設計。複合材料學報，26(6)，177–182。<a href="https://fhclxb.buaa.edu.cn/cn/article/pdf/preview/8564.pdf">連結</a></li>
+    <li>李雅榮（主持人）、鍾承憲、洪主頌、羅光閔（2003）。複合材料螺槳之最佳化設計。國立臺灣大學。<a href="https://scholars.lib.ntu.edu.tw/bitstream/123456789/72422/1/922611E002019.pdf">連結</a></li>
+    <li>付凌峰、姜鑫、孫震、溫世東、高銘澤、田瑞（2023）。碳/玻混雜纖維鋪層結構對風力機葉片彎扭耦合特性的影響。複合材料學報，40(7)。<a href="https://fhclxb.buaa.edu.cn/cn/article/Y2023/I7/3912">連結</a></li>
+    <li>Engineering ToolBox (2008). Shear modulus of elasticity, or modulus of rigidity. <a href="https://www.engineeringtoolbox.com/modulus-rigidity-d_946.html">連結</a></li>
+  </ol>
+</section>
+
+<footer>
+  <span>研究主題、實驗設計與原始數據由師生共同完成；AI 工具用於查找文獻、理論驗證輔助、圖表與文字整理。</span>
+  <span>資料來源：第二十五屆旺宏科學獎創意說明書 SA25-782、新北市 114 學年度科展作品說明書。</span>
+</footer>
+</div>
+
+<script>
+(function(){
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const sup = s => String(s).replace(/-/g,'⁻').replace(/\d/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const sci = (v,p=3) => { const e=Math.floor(Math.log10(v)); const m=v/10**e; return m.toFixed(p)+'×10'+sup(e); };
+const I = 3.27e-6, m = 6.11e-3, g = 9.8, L = 0.5;
+
+/* ---------- pendulum ---------- */
+const mats = [['鋼絲',0.6],['銅線',0.9],['玉線',5.8],['絲帶 1 cm',7],['棉線',24]];
+let T = 0.6, t0 = performance.now();
+const btns = document.getElementById('pendBtns');
+const pT = document.getElementById('pT'), pK = document.getElementById('pK');
+function pick(i){
+  T = mats[i][1]; t0 = performance.now();
+  [...btns.children].forEach((b,j)=>b.setAttribute('aria-pressed', j===i));
+  pT.textContent = T+' s'; pK.textContent = sci(4*Math.PI**2*I/T**2,2);
+}
+mats.forEach(([n],i)=>{const b=document.createElement('button');b.type='button';b.textContent=n;b.onclick=()=>pick(i);btns.appendChild(b);});
+pick(0);
+const cv = document.getElementById('pend'), cx = cv.getContext('2d');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+function draw(now){
+  const W=cv.width, c=W/2, amp=0.9;
+  const th = reduce.matches ? amp*0.6 : amp*Math.cos(2*Math.PI*((now-t0)/1000)/T);
+  cx.clearRect(0,0,W,W);
+  cx.strokeStyle=css('--rule'); cx.lineWidth=1;
+  cx.beginPath(); cx.arc(c,c,150,0,Math.PI*2); cx.stroke();
+  cx.setLineDash([4,6]);
+  [-amp,amp].forEach(a=>{cx.beginPath();cx.moveTo(c-150*Math.cos(a),c-150*Math.sin(a));cx.lineTo(c+150*Math.cos(a),c+150*Math.sin(a));cx.stroke();});
+  cx.setLineDash([]);
+  cx.save(); cx.translate(c,c); cx.rotate(th);
+  cx.fillStyle=css('--muted'); cx.fillRect(-140,-9,280,18);
+  cx.fillStyle=css('--measure'); cx.beginPath(); cx.arc(0,0,7,0,Math.PI*2); cx.fill();
+  cx.restore();
+  cx.strokeStyle=css('--theory'); cx.lineWidth=3;
+  cx.beginPath(); cx.arc(c,c,170,Math.min(0,th),Math.max(0,th)); cx.stroke();
+  cx.fillStyle=css('--muted'); cx.font='13px "IBM Plex Mono", monospace';
+  cx.fillText('θ = '+(th*180/Math.PI).toFixed(0)+'°', 16, 26);
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+/* ---------- calculator ---------- */
+const cI=document.getElementById('cI'), cT=document.getElementById('cT'), cK=document.getElementById('cK');
+function calc(){ const i=parseFloat(cI.value), t=parseFloat(cT.value);
+  cK.textContent = (i>0&&t>0) ? sci(4*Math.PI**2*i/t**2) : '請輸入大於 0 的數值'; }
+cI.oninput=cT.oninput=calc; calc();
+
+/* ---------- svg helpers ---------- */
+const NS='http://www.w3.org/2000/svg';
+function el(svg,tag,a,txt){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e;}
+function axes(svg,{x0,x1,y0,y1,xs,ys,xt,yt,xl,yl,xfmt,yfmt,W,H,M}){
+  const X=v=>M.l+(xs(v)-xs(x0))/(xs(x1)-xs(x0))*(W-M.l-M.r);
+  const Y=v=>H-M.b-(ys(v)-ys(y0))/(ys(y1)-ys(y0))*(H-M.t-M.b);
+  yt.forEach(v=>{el(svg,'line',{x1:M.l,x2:W-M.r,y1:Y(v),y2:Y(v),stroke:'var(--grid)'});
+    el(svg,'text',{x:M.l-8,y:Y(v)+4,'text-anchor':'end','font-size':11,fill:'var(--muted)','font-family':'IBM Plex Mono,monospace'},yfmt(v));});
+  xt.forEach(v=>el(svg,'text',{x:X(v),y:H-M.b+18,'text-anchor':'middle','font-size':11,fill:'var(--muted)','font-family':'IBM Plex Mono,monospace'},xfmt(v)));
+  el(svg,'line',{x1:M.l,x2:W-M.r,y1:H-M.b,y2:H-M.b,stroke:'var(--muted)'});
+  if(xl)el(svg,'text',{x:(M.l+W-M.r)/2,y:H-6,'text-anchor':'middle','font-size':12,fill:'var(--muted)'},xl);
+  if(yl)el(svg,'text',{x:14,y:(M.t+H-M.b)/2,'text-anchor':'middle','font-size':12,fill:'var(--muted)',transform:`rotate(-90 14 ${(M.t+H-M.b)/2})`},yl);
+  return {X,Y};
+}
+const lg=Math.log10, pow10=e=>'10'+sup(e);
+const decs=(a,b)=>{const r=[];for(let e=a;e<=b;e++)r.push(10**e);return r;};
+
+/* ---------- chart 1 ---------- */
+(function(){
+  const svg=document.getElementById('ch1'), W=640,H=300,M={l:64,r:16,t:16,b:44};
+  const d=[['鋼絲',3.586e-4],['銅線',1.594e-4],['玉線',3.838e-6],['絲帶',2.635e-6],['棉線',2.241e-7]];
+  const n=d.length, bw=(W-M.l-M.r)/n;
+  const {Y}=axes(svg,{x0:0,x1:1,y0:1e-7,y1:1e-3,xs:v=>v,ys:lg,xt:[],yt:decs(-7,-3),xfmt:String,yfmt:v=>pow10(Math.round(lg(v))),yl:'κ (N·m/rad)',W,H,M});
+  d.forEach(([k,v],i)=>{const x=M.l+i*bw+bw*0.22, w=bw*0.56;
+    el(svg,'rect',{x,y:Y(v),width:w,height:Y(1e-7)-Y(v),fill:i<2?'var(--measure)':'var(--muted)',opacity:i<2?1:.55,rx:2});
+    el(svg,'text',{x:x+w/2,y:Y(v)-6,'text-anchor':'middle','font-size':11,fill:'var(--ink)','font-family':'IBM Plex Mono,monospace'},sci(v,2));
+    el(svg,'text',{x:x+w/2,y:H-M.b+20,'text-anchor':'middle','font-size':13,fill:'var(--ink)'},k);});
+})();
+
+/* ---------- table 2 ---------- */
+const rib=[['A',0.6,12.9,7.758e-7,5.26e-5],['B',1.0,7,2.635e-6,8.95e-5],['C',1.5,4.3,6.982e-6,1.36e-4],['D',2.5,2.2,2.667e-5,2.29e-4],['E',4.0,1.3,7.639e-5,3.66e-4]];
+document.getElementById('t2').innerHTML=rib.map(([k,w,t,km,ks])=>
+  `<tr><td>絲帶 ${k}</td><td>${w}</td><td>${t}</td><td>${sci(km)}</td><td>${sci(ks,2)}</td><td class="warn">${(km/ks).toFixed(3)}（高估 ${Math.round(ks/km)}×）</td></tr>`).join('');
+
+/* ---------- chart 3 ---------- */
+(function(){
+  const svg=document.getElementById('ch3'), W=640,H=340,M={l:64,r:84,t:16,b:44};
+  const data={玉線:[9.430e-6,2.440e-5,4.467e-5],棉線:[1.185e-5,1.647e-5,3.227e-5],銅線:[8.068e-4,2.066e-3,5.738e-3],鋼絲:[1.434e-3,3.227e-3,1.291e-2]};
+  const n={玉線:2.25,棉線:1.40,銅線:2.80,鋼絲:3.09};
+  const col={玉線:'var(--measure)',棉線:'var(--alt)',銅線:'var(--theory)',鋼絲:'var(--ink)'};
+  const ds=[0.02,0.03,0.04];
+  const {X,Y}=axes(svg,{x0:0.018,x1:0.045,y0:1e-6,y1:1e-1,xs:lg,ys:lg,xt:ds,yt:decs(-6,-1),xfmt:v=>(v*100)+' cm',yfmt:v=>pow10(Math.round(lg(v))),xl:'並列間距 d',yl:'κ (N·m/rad)',W,H,M});
+  const th=d=>m*g*d*d/(4*L);
+  el(svg,'line',{x1:X(0.018),y1:Y(th(0.018)),x2:X(0.045),y2:Y(th(0.045)),stroke:'var(--theory)','stroke-width':2,'stroke-dasharray':'6 5'});
+  el(svg,'text',{x:X(0.045)+6,y:Y(th(0.045))+4,'font-size':11,fill:'var(--theory)'},'理論 n=2');
+  const lgd=document.getElementById('lg3'), pw=document.getElementById('pw');
+  for(const k in data){const v=data[k];
+    el(svg,'polyline',{points:ds.map((d,i)=>X(d)+','+Y(v[i])).join(' '),fill:'none',stroke:col[k],'stroke-width':2});
+    ds.forEach((d,i)=>el(svg,'circle',{cx:X(d),cy:Y(v[i]),r:4,fill:col[k]}));
+    el(svg,'text',{x:X(0.04)+8,y:Y(v[2])+4,'font-size':12,fill:col[k]},k);
+    lgd.insertAdjacentHTML('beforeend',`<span><i style="background:${col[k]}"></i>${k}</span>`);
+    const dev=n[k]-2, cls=Math.abs(dev)<=0.3?'ok':'warn';
+    pw.insertAdjacentHTML('beforeend',`<div class="card"><div class="label">${k}</div><div class="num" style="font-size:1.6rem">n = ${n[k].toFixed(2)}</div><div class="${cls}" style="font-size:.85rem">${dev>0?'+':''}${dev.toFixed(2)} 相對理論值 2</div></div>`);
+  }
+})();
+
+/* ---------- chart 4 ---------- */
+(function(){
+  const svg=document.getElementById('ch4'), W=640,H=340,M={l:64,r:16,t:16,b:44};
+  const ws=rib.map(r=>r[1]);
+  const {X,Y}=axes(svg,{x0:0.5,x1:5,y0:1e-7,y1:1e-3,xs:lg,ys:lg,xt:ws,yt:decs(-7,-3),xfmt:v=>v+'',yfmt:v=>pow10(Math.round(lg(v))),xl:'絲帶寬度 w (cm)',yl:'κ (N·m/rad)',W,H,M});
+  const line=(pts,c,dash)=>{el(svg,'polyline',{points:pts.map(([x,y])=>X(x)+','+Y(y)).join(' '),fill:'none',stroke:c,'stroke-width':2,'stroke-dasharray':dash||''});
+    pts.forEach(([x,y])=>el(svg,'circle',{cx:X(x),cy:Y(y),r:4,fill:c}));};
+  line(rib.map(r=>[r[1],r[4]]),'var(--theory)','6 5');
+  line(rib.map(r=>[r[1],m*g*(r[1]/100)**2/(4*L)]),'var(--alt)','2 4');
+  line(rib.map(r=>[r[1],r[3]]),'var(--measure)');
+})();
+})();
+</script>
+
+</body>
+</html>
