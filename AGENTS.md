@@ -14,9 +14,10 @@
 
 | 路徑 | 內容 |
 | --- | --- |
-| `index.html` | 主站：全站搜尋、分頁列，以及目前進度、比賽專區、版本紀錄、分析筆記、原始檔、更新紀錄六個分頁，以及「緞帶」專題分頁（`id="view-ribbon"`，含互動動畫） |
-| `contests/*.json` | 比賽專區的資料，一場比賽一個檔案 |
-| `contests/index.json` | 所有比賽檔名的清單（備援用，見下方） |
+| `index.html` | 主站：全站搜尋、分頁列，以及目前進度（資料在 data/status.json）、比賽專區（資料在 items/）、版本紀錄、分析筆記、原始檔、更新紀錄六個分頁，以及「緞帶」專題分頁（`id="view-ribbon"`，含互動動畫） |
+| `data/status.json` | 「目前進度」分頁的資料：`goals`（每個目標一張卡片）與 `next`（下一步） |
+| `items/*.json` | 比賽專區的資料，一場比賽一個檔案 |
+| `items/index.json` | 所有比賽檔名的清單（備援用，見下方） |
 | `assets/` | 圖片，例如 `fig7-double-wire.png`（雙線並列扭轉示意圖） |
 | `pages/wiretwist.html` | WireTwist Lab 研究網站（分頁內嵌） |
 | `pages/kappa.html` | kappa 扭客研究網站（分頁內嵌） |
@@ -26,45 +27,44 @@
 
 ### 新增一場比賽
 
-1. 在 `contests/` 新增一個檔案，檔名用 `YYYY-MM-DD-英文代稱.json`，例如 `2026-12-22-yphs-science-fair.json`。日期不確定時用年份開頭。
-2. 內容照下面的格式，沒有資料的欄位留空字串，不要刪掉欄位。
-3. 把新檔名加進 `contests/index.json`。
+網站上按「＋ 新增比賽」填表，會開 GitHub 新增檔案頁面，按 Commit changes 即可。直接改檔案時：
+
+1. 在 `items/` 新增一個檔案，檔名用 `YYYY-MM-DD-英文代稱.json`，只用英數字、`-`、`.`。
+2. 內容照下面的格式。
+3. 把新檔名加進 `items/index.json`。
 4. 在 `index.html` 的「更新紀錄」分頁最上面加一筆紀錄。
 
 ```json
 {
   "title": "比賽名稱",
-  "status": "準備中",
   "date": "2026-12-22",
-  "organizer": "主辦單位",
-  "location": "地點",
-  "team": "隊伍 / 作品名稱",
-  "category": "科別 · 組別",
-  "code": "參賽編號",
+  "status": "planning",
   "result": "成績，例如：決賽入圍",
   "summary": "一兩句話的簡介",
-  "notes": "備註",
-  "timeline": [
-    { "date": "2026-10-20", "text": "完成報名", "done": true },
-    { "date": "2026-11-13", "text": "第一階段說明書繳交截止", "done": false }
-  ],
+  "facts": { "主辦單位": "○○○", "地點": "○○○", "參賽編號": "○○○" },
+  "description": "### 重要時程\n\n- ✓ 完成報名\n- 第一階段說明書繳交截止\n\n### 備註\n\n可用 Markdown",
+  "files_folders": [],
   "links": [
-    { "label": "作品說明書（PDF）", "href": "docs/macronix.pdf" }
+    { "title": "作品說明書（PDF）", "url": "https://malixian-hash.github.io/kappa-site/docs/macronix.pdf" }
   ]
 }
 ```
 
-- `status` 只能是 `準備中`、`已報名`、`已繳交`、`已結束` 其中之一。
-- `date` 用 `YYYY-MM-DD`，比賽會依日期由新到舊排列。
-- `links.href` 只接受 `https://` 開頭的網址，或站內的 `docs/`、`pages/` 路徑。
+- `status` 只能是 `planning`（準備中）、`registered`（已報名）、`ongoing`（已繳交）、`done`（已結束）。
+- 比賽依 `date` 由新到舊排列；詳細頁網址是 `#contest-<檔名去掉 .json>`。
+- `links.url` 只顯示 `https://` 開頭的網址，站內 PDF 也要寫完整網址。
 
 ### 更新比賽進度
 
-直接改那場比賽的 JSON 檔，例如把時程的 `done` 改成 `true`、填上 `result`。
+直接改那場比賽的 JSON 檔，例如在 `description` 的時程前加 ✓、填上 `result`。
 
-### 更新「目前進度」「分析筆記」「版本紀錄」
+### 更新「目前進度」
 
-這三個分頁的內容直接寫在 `index.html` 裡，各自是 `id="view-progress"`、`id="view-notes"`、`id="view-versions"` 的 `<section>`。照現有的格式新增或修改，新的項目放最上面。
+改 `data/status.json`。`goals` 每項有 `id`、`title`、`status`、`detail`，`status` 只能是 `done`（完成）、`doing`（進行中）、`blocked`（卡住）、`todo`（待辦）。發現說明書的問題時，加一個 `todo` 目標，不要改原始檔。
+
+### 更新「分析筆記」「版本紀錄」
+
+這兩個分頁的內容直接寫在 `index.html` 裡，各自是 `id="view-notes"`、`id="view-versions"` 的 `<section>`。照現有的格式新增或修改，新的項目放最上面。
 
 ### 新增一個分頁
 

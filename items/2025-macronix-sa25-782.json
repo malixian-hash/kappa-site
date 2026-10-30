@@ -1,0 +1,21 @@
+{
+  "title": "第二十五屆旺宏科學獎",
+  "date": "待補",
+  "status": "ongoing",
+  "result": "",
+  "summary": "提出並驗證雙線並列模型 κ = mgd²/4L，實測／理論比值收斂到 0.72～1.59。",
+  "facts": {
+    "主辦單位": "旺宏教育基金會",
+    "參賽編號": "SA25-782",
+    "隊伍": "kappa 扭客",
+    "作品": "線材種類與並列方式對扭擺扭力係數之影響研究"
+  },
+  "description": "### 重要時程\n\n- ✓ 繳交創意說明書（22 頁）\n\n### 備註\n\n說明書表 4-2-1 的聖維南理論 κ 仍待修正，詳見分析筆記。",
+  "files_folders": [],
+  "links": [
+    {
+      "title": "旺宏科學獎創意說明書 SA25-782（PDF）",
+      "url": "https://malixian-hash.github.io/kappa-site/docs/macronix.pdf"
+    }
+  ]
+}
