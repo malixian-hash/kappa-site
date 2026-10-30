@@ -17,7 +17,7 @@
 | `index.html` | 主站：全站搜尋、分頁列，以及目前進度（資料在 data/status.json）、比賽專區（資料在 items/）、版本紀錄、分析筆記、原始檔、更新紀錄六個分頁，以及「緞帶」專題分頁（`id="view-ribbon"`，含互動動畫） |
 | `data/status.json` | 「目前進度」分頁的資料：`goals`（每個目標一張卡片）與 `next`（下一步） |
 | `items/*.json` | 比賽專區的資料，一場比賽一個檔案 |
-| `items/index.json` | 所有比賽檔名的清單（備援用，見下方） |
+| `items/index.json` | 所有比賽檔名的清單，也決定比賽專區的排列順序 |
 | `assets/` | 圖片，例如 `fig7-double-wire.png`（雙線並列扭轉示意圖） |
 | `pages/wiretwist.html` | WireTwist Lab 研究網站（分頁內嵌） |
 | `pages/kappa.html` | kappa 扭客研究網站（分頁內嵌） |
@@ -31,7 +31,7 @@
 
 1. 在 `items/` 新增一個檔案，檔名用 `YYYY-MM-DD-英文代稱.json`，只用英數字、`-`、`.`。
 2. 內容照下面的格式。
-3. 把新檔名加進 `items/index.json`。
+3. 把新檔名加進 `items/index.json` 想要的位置（越前面排越上面）。
 4. 在 `index.html` 的「更新紀錄」分頁最上面加一筆紀錄。
 
 ```json
@@ -51,7 +51,7 @@
 ```
 
 - `status` 只能是 `planning`（準備中）、`registered`（已報名）、`ongoing`（已繳交）、`done`（已結束）。
-- 比賽依 `date` 由新到舊排列；詳細頁網址是 `#contest-<檔名去掉 .json>`。
+- 比賽專區的排列順序就是 `items/index.json` 的順序（第一個排最上面，目前旺宏 SA25-782 最新、排第一）；還沒登記進 index.json 的新比賽會暫時排在最前面。詳細頁網址是 `#contest-<檔名去掉 .json>`。
 - `links.url` 只顯示 `https://` 開頭的網址，站內 PDF 也要寫完整網址。
 
 ### 更新比賽進度

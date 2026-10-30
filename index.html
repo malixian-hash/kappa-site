@@ -647,6 +647,8 @@ function itemFromForm() {
       if (!r.ok) throw 0;
       names = (await r.json()).filter(e => e.type === 'file' && /^[\w.-]+\.json$/.test(e.name) && e.name !== 'index.json').map(e => e.name);
     } catch (e) { names = await getJSON('items/index.json'); }
+    let order = []; try { order = await getJSON('items/index.json'); } catch (e) {}
+    const rank = c => { const i = order.indexOf(c._file); return i < 0 ? -1 : i; };
     items = (await Promise.all(names.map(async n => {
       try {
         let c;
@@ -655,8 +657,8 @@ function itemFromForm() {
         c._file = n; return c;
       } catch (e) { return null; }
     }))).filter(c => c && c.title)
-      // 有日期的依日期由新到舊；「待補」之類沒有日期的排在後面
-      .sort((a, b) => { const d = c => /^\d/.test(c.date) ? c.date : ''; return d(b).localeCompare(d(a)) || a._file.localeCompare(b._file); });
+      // 依 items/index.json 的順序排列（最上面的排第一）；還沒登記的新比賽排在最前面
+      .sort((a, b) => rank(a) - rank(b) || String(b.date).localeCompare(String(a.date)));
   } catch (e) { items = []; }
   itemsLoaded = true;
   renderItemList();
