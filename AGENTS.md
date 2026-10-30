@@ -21,6 +21,7 @@
 | `assets/` | 圖片，例如 `fig7-double-wire.png`（雙線並列扭轉示意圖） |
 | `pages/wiretwist.html` | WireTwist Lab 研究網站（分頁內嵌） |
 | `pages/kappa.html` | kappa 扭客研究網站（分頁內嵌） |
+| `docs/autonomous-learning/` | 自主學習計畫書公開版與研究簡報預覽 |
 | `docs/*.pdf` | 三份說明書原始檔：`yongping.pdf`、`ntpc.pdf`、`macronix.pdf` |
 
 ## 常見工作

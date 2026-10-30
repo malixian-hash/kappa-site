@@ -225,7 +225,7 @@ dl.facts dt{color:var(--muted)}dl.facts dd{margin:0;min-width:0}
 <header class="site">
   <h1>kappa 扭客研究站</h1>
   <p class="sub">線材種類與並列方式對扭擺扭力係數之影響研究：研究網站、比賽紀錄與資料</p>
-  <div class="chips"><span class="chip">物理與天文學科</span><span class="chip">高級中等學校組</span><span class="chip">旺宏科學獎 SA25-782</span><span class="chip">最後更新 2026-10-30</span></div>
+  <div class="chips"><span class="chip">物理與天文學科</span><span class="chip">高級中等學校組</span><span class="chip">旺宏科學獎 SA25-782</span><span class="chip">最後更新 2026-10-31</span></div>
 </header>
 </div>
 
@@ -355,6 +355,14 @@ dl.facts dt{color:var(--muted)}dl.facts dd{margin:0;min-width:0}
     <h2>更新紀錄</h2>
     <p>這個網站本身的修改紀錄。</p>
     <div class="entry">
+      <div class="top"><span class="ver">2026-10-31</span><h3>新增「自主學習」專區</h3></div>
+      <ul><li>加入扭擺扭力研究自主學習計畫的去識別化公開版</li><li>加入線材種類與並列方式研究簡報的 12 頁線上預覽</li><li>新增簡報檔案下載按鈕</li><li>原始計畫書中的姓名、班級、學號與簽名未公開</li></ul>
+    </div>
+    <div class="entry">
+      <div class="top"><span class="ver">2026-10-31</span><h3>同步 115 學年度永平高中科展正式文件資訊</h3></div>
+      <ul><li>依校內科展實施辦法補充第一階段說明書第一頁的指導教師簽名規定（校內科展可略）</li><li>補充實施辦法附錄中的 AI 協作說明要求</li><li>確認專案共享的實施辦法 PDF 與作品說明書格式 Word 已同步至原始檔</li></ul>
+    </div>
+    <div class="entry">
       <div class="top"><span class="ver">2026-10-30</span><h3>新增比賽：115 學年度永平高中科學展覽會</h3></div>
       <ul><li>比賽專區新增一張卡片：重要時程、說明書格式、評審標準、獎勵與繳交表單</li><li>原始檔加入實施辦法（PDF）與作品說明書格式（Word）</li></ul>
     </div>
@@ -386,6 +394,25 @@ dl.facts dt{color:var(--muted)}dl.facts dd{margin:0;min-width:0}
       <div class="top"><span class="ver">2026-10-30</span><h3>WireTwist Lab 改版</h3></div>
       <ul><li>改以旺宏版為準，加入研究歷程、實驗三、實驗四與雙線並列推導</li><li>所有 κ、G 改由週期以 I = 3.27×10⁻⁶ 即時計算</li></ul>
     </div>
+  </section>
+  <section class="view pane" id="view-autonomous" hidden>
+    <h2>自主學習</h2>
+    <p>整理與本研究相關的自主學習成果；公開檔案已遮蔽姓名、班級、學號與簽名等個人資料。</p>
+    <div class="cards">
+      <div class="card">
+        <span class="k">研究計畫 · 3 頁 · 公開版</span>
+        <h3>扭擺扭力研究自主學習計畫</h3>
+        <p>以線材與並列方式的扭擺研究為主軸，整理研究動機、目標、方法、進度與預期成果。</p>
+        <a class="btn" href="docs/autonomous-learning-plan-public.pdf" target="_blank" rel="noopener">開啟公開版計畫書</a>
+      </div>
+      <div class="card">
+        <span class="k">研究簡報 · 12 頁 · 線上預覽</span>
+        <h3>線材種類與並列方式對扭擺扭力係數之影響研究</h3>
+        <p>涵蓋研究摘要、理論基礎、實驗零至四、誤差分析、雙線擺效應與研究結論。</p>
+        <div class="factions"><a class="btn" href="docs/torsion-study-presentation.html" target="_blank" rel="noopener">開啟簡報預覽</a><a class="btn ghost" href="docs/torsion-study-presentation.html" download="線材種類與並列方式研究簡報.html">下載簡報檔案</a></div>
+      </div>
+    </div>
+    <p class="meta-note">備註：原始自主學習計畫書含個人資料與簽名，未直接公開；網站提供的是去識別化版本。</p>
   </section>
   <section class="view pane" id="view-ribbon" hidden>
     <h2>緞帶專題：為什麼寬緞帶特別硬</h2>
@@ -438,6 +465,7 @@ const TABS = [
   {id:'notes', name:'分析筆記'},
   {id:'files', name:'原始檔'},
   {id:'changelog', name:'更新紀錄'},
+  {id:'autonomous', name:'自主學習'},
   {id:'ribbon', name:'緞帶'},
   {id:'wiretwist', name:'WireTwist Lab', src:'pages/wiretwist.html'},
   {id:'kappa', name:'kappa 扭客', src:'pages/kappa.html'},
