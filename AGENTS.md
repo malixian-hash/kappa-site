@@ -1,80 +1,99 @@
-# AGENTS.md：kappa 扭客研究站維護規則
+# 給 AI 助理（Claude、Manus…）與人的更新指南
 
-這個網站由 Claude 與 Manus 共同維護。任何 AI 助理（或人）修改網站前，請先讀完這份文件。
+這個儲存庫是一個 GitHub Pages 網站。**`index.html` 不用改**，只改資料檔；推上 `main` 約 1 分鐘後網站自動更新。
 
-## 專案是什麼
+**每完成一件事（做好、測試結果、發現問題、改變決定）就更新網站**，不要等人問。
 
-科展研究「線材種類與並列方式對扭擺扭力係數之影響研究」的網站，隊伍名稱 kappa 扭客。
-研究參加過三場比賽，依時間先後：永平高中校內科展 → 新北市科展 → 第二十五屆旺宏科學獎（SA25-782）。
-內容以最新的旺宏版說明書為準。
+> ⚠️ 網站通常是**公開**的，任何人都看得到。不要放：密碼、token、API key、電子郵件、電話、學生姓名與個資、電腦上的使用者路徑（`C:\Users\…`）、帳號編號。
 
-網站是純靜態 HTML，放在 GitHub Pages，沒有建置步驟，改完 push 到 `main` 就會上線。
+## 要改哪個檔案
 
-## 檔案結構
+| 想做的事 | 檔案 |
+|---|---|
+| 網站名稱、分頁、儲存庫 | `data/site.json`（建站時改一次就好） |
+| 更新某個目標的狀態 | `data/status.json` 的 `goals`，並更新 `updated` 日期 |
+| 更新「下一步」 | `data/status.json` 的 `next` |
+| 記錄新版本 | `data/versions.json` **最前面**加一筆 |
+| 新增筆記 | `notes/YYYY-MM-DD-主題.md`，並在 `notes/index.json` **最前面**加一筆 |
+| 新增 / 修改活動（項目） | `items/YYYY-MM-DD-代號.json`，一筆一個檔；同時在 `items/index.json` 加檔名。人也可以在網站按「＋ 新增」 |
 
-| 路徑 | 內容 |
-| --- | --- |
-| `index.html` | 主站：全站搜尋、分頁列，以及目前進度、比賽專區、版本紀錄、分析筆記、原始檔、更新紀錄六個分頁，以及「緞帶」專題分頁（`id="view-ribbon"`，含互動動畫） |
-| `contests/*.json` | 比賽專區的資料，一場比賽一個檔案 |
-| `contests/index.json` | 所有比賽檔名的清單（備援用，見下方） |
-| `assets/` | 圖片，例如 `fig7-double-wire.png`（雙線並列扭轉示意圖） |
-| `pages/wiretwist.html` | WireTwist Lab 研究網站（分頁內嵌） |
-| `pages/kappa.html` | kappa 扭客研究網站（分頁內嵌） |
-| `docs/*.pdf` | 三份說明書原始檔：`yongping.pdf`、`ntpc.pdf`、`macronix.pdf` |
+### 目標狀態只能用這四個
 
-## 常見工作
+`done`（完成）、`doing`（進行中）、`blocked`（卡住）、`todo`（待辦）
 
-### 新增一場比賽
+項目（活動）的狀態看 `data/site.json` 的 `itemStatus`，例如 `planning`、`registered`、`ongoing`、`done`。
 
-1. 在 `contests/` 新增一個檔案，檔名用 `YYYY-MM-DD-英文代稱.json`，例如 `2026-12-22-yphs-science-fair.json`。日期不確定時用年份開頭。
-2. 內容照下面的格式，沒有資料的欄位留空字串，不要刪掉欄位。
-3. 把新檔名加進 `contests/index.json`。
-4. 在 `index.html` 的「更新紀錄」分頁最上面加一筆紀錄。
+### 版本紀錄格式
 
 ```json
 {
-  "title": "比賽名稱",
-  "status": "準備中",
-  "date": "2026-12-22",
-  "organizer": "主辦單位",
-  "location": "地點",
-  "team": "隊伍 / 作品名稱",
-  "category": "科別 · 組別",
-  "code": "參賽編號",
-  "result": "成績，例如：決賽入圍",
-  "summary": "一兩句話的簡介",
-  "notes": "備註",
-  "timeline": [
-    { "date": "2026-10-20", "text": "完成報名", "done": true },
-    { "date": "2026-11-13", "text": "第一階段說明書繳交截止", "done": false }
-  ],
-  "links": [
-    { "label": "作品說明書（PDF）", "href": "docs/macronix.pdf" }
-  ]
+  "version": "0.2",
+  "date": "2026-03-15",
+  "author": "Claude",
+  "title": "一句話說明這版做了什麼",
+  "changes": ["具體改變 1", "具體改變 2"]
 }
 ```
 
-- `status` 只能是 `準備中`、`已報名`、`已繳交`、`已結束` 其中之一。
-- `date` 用 `YYYY-MM-DD`，比賽會依日期由新到舊排列。
-- `links.href` 只接受 `https://` 開頭的網址，或站內的 `docs/`、`pages/` 路徑。
+- `author` 寫 `Claude`、`Manus` 或人的名字
+- 小改 +0.1；完成一個大目標升到下一個整數（0.9 之後是 0.10，不是 1.0，除非真的完成大目標）
 
-### 更新比賽進度
+### 項目格式
 
-直接改那場比賽的 JSON 檔，例如把時程的 `done` 改成 `true`、填上 `result`。
+```json
+{
+  "title": "名稱",
+  "date": "2026-11-20",
+  "status": "planning",
+  "result": "成績（還沒結束就留空）",
+  "summary": "一句話摘要",
+  "facts": { "主辦單位": "○○○", "地點": "○○○" },
+  "description": "詳細說明，可用 Markdown",
+  "files_folders": [],
+  "links": [{ "title": "簡章", "url": "https://..." }]
+}
+```
 
-### 更新「目前進度」「分析筆記」「版本紀錄」
+### 規則
 
-這三個分頁的內容直接寫在 `index.html` 裡，各自是 `id="view-progress"`、`id="view-notes"`、`id="view-versions"` 的 `<section>`。照現有的格式新增或修改，新的項目放最上面。
+- 不知道的寫 `待補` 或留空，**不要猜**
+- 檔名只用英數字、`-`、`_`、`.`（網頁會拒絕其他檔名）
+- Google 雲端硬碟 / 文件連結：先拿掉 `ouid=`（帳號編號）和 `usp=` 參數
+- 對方說「只當參考、不改網站」的資料，就不要放上網站
+- 更正錯誤時加一筆新版本說明更正，不要偷偷改掉舊紀錄
 
-### 新增一個分頁
+## Commit 訊息
 
-在 `index.html` 底部 `<script>` 裡的 `TABS` 陣列加一行，並在 `<main>` 裡加一個 `id="view-<id>"` 的 `<section class="view pane" hidden>`。全站搜尋會自動把新分頁的內容收進去。
+一行說明，開頭標註是誰：
 
-## 規則
+```
+[Claude] v0.3：新增 3 月測試結果
+[Manus] 補上活動報名連結
+```
 
-- 全部使用繁體中文。
-- 數字要和說明書一致；如果發現說明書的數字有錯，寫進「分析筆記」，不要直接改掉研究數據。
-- 轉動慣量一律用 I = 3.27×10⁻⁶ kg·m²（旺宏版已修正舊版 3.253×10⁻⁵ 的 10 倍錯誤）。
-- 不要放學生的個人資料（姓名、電話、照片）除非使用者明確要求。
-- 每次修改都在「更新紀錄」分頁加一筆，寫日期與改了什麼，並在 commit 訊息說明。
-- 改完用瀏覽器打開 `index.html` 確認：分頁能切換、搜尋找得到新內容、手機寬度不會左右捲動。
+網站「更新紀錄」分頁直接顯示這些訊息，要讓人看得懂。
+
+## 改之前、改之後
+
+**改之前**
+1. `git pull --rebase`：多個 AI / 多個人一起維護，先拿最新版本，避免互相覆蓋
+2. 看 `data/versions.json` 第一筆，決定新的版本號
+
+**改之後**
+1. 檢查 JSON 格式（多一個或少一個逗號，整頁都會載入失敗）
+2. 掃一次敏感資訊（見上方清單）
+3. commit、push
+4. 等 GitHub Pages 建置完成，打開網站確認看得到新內容（網址加 `?v=commit前7碼` 可以跳過瀏覽器快取）
+
+`tools/publish.ps1` 會自動做 1～4。
+
+## 這個網站的專屬規則（kappa 扭客研究站）
+
+研究「線材種類與並列方式對扭擺扭力係數之影響研究」，隊伍 kappa 扭客。參加過三場比賽：永平高中校內科展 → 新北市科展 → 第二十五屆旺宏科學獎（SA25-782）。內容以最新的旺宏版說明書為準。
+
+- **不要修改作者的原始檔**：`docs/*.pdf`（三份說明書）和 `pages/kappa.html`（作者原作網站）。發現錯誤時，寫進 `data/status.json` 的 `goals`（`status: "todo"`），必要時在 `notes/` 寫一篇筆記說明，由作者決定怎麼改。
+- 數字要和說明書一致；轉動慣量一律用 I = 3.27×10⁻⁶ kg·m²（旺宏版已修正舊版 3.253×10⁻⁵ 的 10 倍錯誤）。
+- 比賽放在 `items/`，狀態用 `data/site.json` 的 `itemStatus`：`planning` 準備中、`registered` 已報名、`ongoing` 已繳交、`done` 已結束。
+- 項目的 `links.url` 只顯示 `https://` 開頭的網址；站內 PDF 請寫完整網址，例如 `https://malixian-hash.github.io/kappa-site/docs/macronix.pdf`。
+- `pages/` 是獨立的互動頁面（`ribbon.html` 緞帶扭擺動畫、`wiretwist.html` WireTwist Lab、`kappa.html` kappa 扭客），從筆記、頁尾和「原始檔」分頁連過去；改 `ribbon.html`、`wiretwist.html` 時要保留現有功能。
+- 圖片放 `assets/`，筆記裡用 `![說明](assets/檔名.png)`。

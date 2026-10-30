@@ -1,0 +1,50 @@
+[
+  {
+    "title": "比賽繳交的作品說明書",
+    "folder": "docs",
+    "files": [
+      {
+        "name": "永平高中校內科展作品說明書（16 頁）",
+        "path": "docs/yongping.pdf",
+        "tool": "PDF",
+        "size": "3.0 MB"
+      },
+      {
+        "name": "新北市科展作品說明書（18 頁）",
+        "path": "docs/ntpc.pdf",
+        "tool": "PDF",
+        "size": "1.7 MB"
+      },
+      {
+        "name": "旺宏科學獎創意說明書 SA25-782（22 頁）",
+        "path": "docs/macronix.pdf",
+        "tool": "PDF",
+        "size": "1.1 MB"
+      }
+    ]
+  },
+  {
+    "title": "互動頁面",
+    "folder": "pages",
+    "files": [
+      {
+        "name": "緞帶扭擺互動動畫",
+        "path": "pages/ribbon.html",
+        "tool": "HTML",
+        "size": ""
+      },
+      {
+        "name": "WireTwist Lab 研究網站",
+        "path": "pages/wiretwist.html",
+        "tool": "HTML",
+        "size": ""
+      },
+      {
+        "name": "kappa 扭客研究網站",
+        "path": "pages/kappa.html",
+        "tool": "HTML",
+        "size": ""
+      }
+    ]
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "title": "kappa 扭客研究站",
+  "subtitle": "線材種類與並列方式對扭擺扭力係數之影響研究：進度、比賽、版本紀錄與分析筆記",
+  "description": "科展研究「線材種類與並列方式對扭擺扭力係數之影響研究」的進度網站：比賽紀錄、說明書版本、分析筆記、緞帶扭擺互動動畫。",
+  "repo": "malixian-hash/kappa-site",
+  "privateRepo": "malixian-hash/kappa-site",
+  "chips": [
+    "物理與天文學科",
+    "高級中等學校組",
+    "旺宏科學獎 SA25-782"
+  ],
+  "tabs": [
+    "status",
+    "items",
+    "versions",
+    "notes",
+    "files",
+    "commits"
+  ],
+  "tabLabels": {
+    "items": "比賽專區",
+    "notes": "分析筆記"
+  },
+  "itemsHint": "每場比賽一張卡片，點開看詳細內容與相關原始檔。",
+  "itemStatus": {
+    "planning": "準備中",
+    "registered": "已報名",
+    "ongoing": "已繳交",
+    "done": "已結束"
+  },
+  "footer": "由 Claude 與 Manus 共同維護。更新方式見 [AGENTS.md](https://github.com/malixian-hash/kappa-site/blob/main/AGENTS.md)。互動頁面：[緞帶扭擺動畫](pages/ribbon.html) · [WireTwist Lab](pages/wiretwist.html) · [kappa 扭客](pages/kappa.html)"
+}

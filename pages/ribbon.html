@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>緞帶扭擺互動動畫 · kappa 扭客研究站</title>
+<meta name="description" content="選擇緞帶寬度、調整扭轉角，看雙線並列（盪鞦韆）結構如何讓寬緞帶特別硬。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#F2F4F1; --panel:#FFFFFF; --ink:#16211F; --muted:#5A6A66; --line:#D5DDD9;
+  --accent:#A9581F; --soft:#E6ECE8; --hit:#F6E3C8; --ok:#2F6B4F; --info:#2F5F8A; --danger:#A33A2A;
+  --display:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1513; --panel:#16201D; --ink:#E2EAE6; --muted:#97A8A3; --line:#2A3833;
+  --accent:#E28D52; --soft:#1C2925; --hit:#4A3320; --ok:#5FA883; --info:#6E9FD0; --danger:#E07A66; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1513; --panel:#16201D; --ink:#E2EAE6; --muted:#97A8A3; --line:#2A3833;
+  --accent:#E28D52; --soft:#1C2925; --hit:#4A3320; --ok:#5FA883; --info:#6E9FD0; --danger:#E07A66; color-scheme:dark}
+*{box-sizing:border-box}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.7}
+[hidden]{display:none!important}
+.gut{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.back{color:var(--muted);text-decoration:none;font-size:.9rem}
+.back:hover{color:var(--ink)}
+.pane{display:grid;gap:18px;margin-top:12px}
+.pane h2{font-family:var(--display);font-weight:900;font-size:1.5rem;margin:0;text-wrap:balance}
+.pane > p{margin:0;color:var(--muted);max-width:42em}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:8px;align-content:start;min-width:0}
+.card .k{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.card h3{margin:0;font-size:1.05rem}
+.card p{margin:0;color:var(--muted);font-size:.92rem}
+button.ghost{font:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.rbox{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:start}
+.rsim{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px;min-width:0}
+.rsim canvas{width:100%;height:360px;display:block}
+.rctl{display:grid;gap:10px}
+.rrow{display:flex;flex-wrap:wrap;gap:6px}
+.rrow button{font:inherit;font-size:.88rem;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:6px;padding:5px 12px;cursor:pointer}
+.rrow button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--panel)}
+.rslide{display:grid;grid-template-columns:auto auto 1fr;gap:10px;align-items:center;font-size:.9rem;color:var(--muted)}
+.rslide b{color:var(--ink);min-width:3.2em}
+.rslide input{width:100%;accent-color:var(--accent)}
+.rread{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rcell{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:2px;min-width:0}
+.rcell span{font-size:.8rem;color:var(--muted)}
+.rcell b{font-size:1.15rem;font-weight:600;overflow-wrap:anywhere}
+.rcell small{font-size:.78rem;color:var(--muted)}
+.rcell.hi{border-color:var(--accent)}
+.rcell.hi b{color:var(--accent)}
+.rfig{margin:0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:8px}
+.rfig img{width:100%;height:auto;display:block}
+.rfig figcaption{font-size:.85rem;color:#5A6A66}
+.rtbl{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.rtbl table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:620px}
+.rtbl th,.rtbl td{padding:9px 14px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.rtbl th:first-child,.rtbl td:first-child{text-align:left}
+.rtbl th{font-weight:500;color:var(--muted);font-size:.8rem}
+.rtbl td{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.rtbl tr:last-child td{border-bottom:0}
+.rtbl tr.sel td{background:var(--soft)}
+.rtbl .good{color:var(--ok);font-weight:600}
+.rnote{font-size:.85rem;color:var(--muted);margin:0}
+@media (max-width:820px){.rbox{grid-template-columns:1fr}.rsim canvas{height:320px}}
+</style>
+</head>
+<body>
+<main class="gut">
+<a class="back" href="../#notes">← 回到 kappa 扭客研究站</a>
+  <section class="pane" id="view-ribbon">
+    <h2>緞帶專題：為什麼寬緞帶特別硬</h2>
+    <p>把線換成緞帶，是整個研究的轉捩點。聖維南理論預測緞帶的 κ 大約和寬度成正比，實測卻增加得快得多。我們的解釋是：緞帶兩側的邊緣就像兩條並列的懸線，一扭轉就斜拉、把鋅棒往上抬，重力因此提供額外的回復力矩。</p>
+
+    <div class="rbox">
+      <div class="rsim">
+        <canvas id="ribbonCanvas" aria-label="緞帶扭擺動畫：兩側邊緣斜拉交叉，鋅棒隨扭轉上升"></canvas>
+        <div class="rctl">
+          <div class="rrow" role="group" aria-label="選擇緞帶寬度" id="ribbonPick"></div>
+          <label class="rslide" for="ribbonAmp">最大扭轉角 <b id="ribbonAmpV" class="mono">120°</b><input id="ribbonAmp" type="range" min="20" max="170" step="5" value="120"></label>
+          <div class="rrow"><button type="button" class="ghost" id="ribbonPlay" aria-pressed="true">暫停</button><button type="button" class="ghost" id="ribbonSlow" aria-pressed="false">慢動作</button></div>
+        </div>
+      </div>
+      <div class="rread">
+        <div class="rcell"><span>緞帶寬度 w</span><b class="mono" id="rW">–</b></div>
+        <div class="rcell"><span>實測平均週期 T</span><b class="mono" id="rTT">–</b></div>
+        <div class="rcell hi"><span>實測 κ</span><b class="mono" id="rKm">–</b></div>
+        <div class="rcell"><span>雙線並列 mgw²/4L</span><b class="mono" id="rKd">–</b><small id="rKdR"></small></div>
+        <div class="rcell"><span>聖維南 G·J<sub>eff</sub>/L</span><b class="mono" id="rKs">–</b><small id="rKsR"></small></div>
+        <div class="rcell"><span>此刻扭轉角 θ</span><b class="mono" id="rTh">–</b></div>
+        <div class="rcell"><span>鋅棒上升 Δh（實際）</span><b class="mono" id="rDh">–</b><small>動畫中已放大以便觀察</small></div>
+      </div>
+    </div>
+
+    <figure class="rfig">
+      <img src="../assets/fig7-double-wire.png" alt="雙線並列懸掛的扭轉示意圖：(a) 初始狀態兩條線材垂直吊著金屬棍；(b) 扭轉狀態線材斜拉交叉，金屬棍旋轉角度 θ" width="938" height="272" loading="lazy">
+      <figcaption>圖七：雙線並列懸掛下的扭轉狀態，可類比成盪鞦韆結構（取自旺宏科學獎說明書）</figcaption>
+    </figure>
+
+    <div class="cards">
+      <div class="card"><span class="k">窄緞帶 · A、B（w ≤ 1 cm）</span><h3>實測略低於雙線模型</h3><p>緞帶整體性強，兩側邊緣無法完全獨立，等效間距比寬度小。比值 0.72、0.88。</p></div>
+      <div class="card"><span class="k">中寬緞帶 · C（w = 1.5 cm）</span><h3>幾乎完全吻合</h3><p>結構整體性與材料剛性的影響剛好抵消。比值 1.04。</p></div>
+      <div class="card"><span class="k">寬緞帶 · D、E（w ≥ 2.5 cm）</span><h3>實測略高於雙線模型</h3><p>緞帶本身的扭轉剛性開始貢獻額外的回復力矩。比值 1.43、1.59。</p></div>
+    </div>
+
+    <h2>五種寬度的比較</h2>
+    <div class="rtbl"><table id="ribbonTable"></table></div>
+    <p class="rnote">實測 κ = 4π²I/T²，I = 3.27×10⁻⁶ kg·m²；雙線並列取 m = 6.11 g、g = 9.8 m/s²、L = 0.5 m、d = w；聖維南取厚度 t = 0.05 cm、G = 3.269×10⁶ N/m²（實驗一量到的緞帶值）。聖維南欄是修正 G 之後的數值，說明書表 4-2-1 的原值見分析筆記「旺宏版說明書驗算與審閱」。</p>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+
+// 緞帶專題：雙線並列（盪鞦韆）扭擺動畫與三種 κ 比較
+(() => {
+  const I = 3.27e-6, m = 6.11e-3, g = 9.8, L = 0.5, t = 0.0005, G = 3.269e6, PI = Math.PI;
+  const sup = e => String(e).replace(/-/g, '⁻').replace(/\d/g, c => '⁰¹²³⁴⁵⁶⁷⁸⁹'[c]);
+  const sci = (x, d = 2) => { const e = Math.floor(Math.log10(x)); return (x / 10 ** e).toFixed(d) + '×10' + sup(e); };
+  const Jeff = w => w * t ** 3 / 3 * (1 - 0.63 * t / w);
+  const R = [['A', 0.006, 12.9], ['B', 0.01, 7], ['C', 0.015, 4.3], ['D', 0.025, 2.2], ['E', 0.04, 1.3]].map(([id, w, T]) => {
+    const k = 4 * PI * PI * I / (T * T), kd = m * g * w * w / (4 * L), ks = G * Jeff(w) / L;
+    return {id, w, T, k, kd, ks, rd:k / kd, rs:k / ks};
+  });
+  let cur = R[2], amp = 120 * PI / 180, playing = !matchMedia('(prefers-reduced-motion: reduce)').matches, slow = false, phase = 0, last = performance.now();
+  const $r = id => document.getElementById(id);
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+  const pick = $r('ribbonPick');
+  R.forEach(r => { const b = document.createElement('button'); b.type = 'button'; b.textContent = `${r.id} · ${r.w * 100} cm`; b.setAttribute('aria-pressed', r === cur);
+    b.onclick = () => { cur = r; phase = 0; [...pick.children].forEach(c => c.setAttribute('aria-pressed', c === b)); readout(); table(); if (!playing) draw(); };
+    pick.appendChild(b); });
+  $r('ribbonAmp').addEventListener('input', e => { amp = e.target.value * PI / 180; $r('ribbonAmpV').textContent = e.target.value + '°'; if (!playing) draw(); });
+  $r('ribbonPlay').onclick = e => { playing = !playing; e.currentTarget.setAttribute('aria-pressed', playing); e.currentTarget.textContent = playing ? '暫停' : '播放'; last = performance.now(); if (playing) requestAnimationFrame(loop); };
+  $r('ribbonPlay').textContent = playing ? '暫停' : '播放'; $r('ribbonPlay').setAttribute('aria-pressed', playing);
+  $r('ribbonSlow').onclick = e => { slow = !slow; e.currentTarget.setAttribute('aria-pressed', slow); };
+
+  function readout() {
+    $r('rW').textContent = (cur.w * 100) + ' cm（緞帶 ' + cur.id + '）';
+    $r('rTT').textContent = cur.T + ' s';
+    $r('rKm').textContent = sci(cur.k, 3);
+    $r('rKd').textContent = sci(cur.kd, 3); $r('rKdR').textContent = '實測是它的 ' + cur.rd.toFixed(2) + ' 倍';
+    $r('rKs').textContent = sci(cur.ks, 3); $r('rKsR').textContent = '實測是它的 ' + cur.rs.toFixed(2) + ' 倍';
+  }
+  function table() {
+    $r('ribbonTable').innerHTML = '<tr><th>緞帶</th><th>寬度 (cm)</th><th>週期 (s)</th><th>實測 κ</th><th>雙線並列 κ</th><th>實測／雙線</th><th>聖維南 κ</th><th>實測／聖維南</th></tr>' +
+      R.map(r => `<tr class="${r === cur ? 'sel' : ''}"><td>${r.id}</td><td>${r.w * 100}</td><td>${r.T}</td><td>${sci(r.k, 3)}</td><td>${sci(r.kd, 3)}</td><td class="good">${r.rd.toFixed(2)}</td><td>${sci(r.ks, 3)}</td><td>${r.rs.toFixed(2)}</td></tr>`).join('');
+  }
+
+  const cv = $r('ribbonCanvas'), ctx = cv.getContext('2d');
+  function draw() {
+    const dpr = devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+    if (!W) return;
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    const ink = css('--ink'), mut = css('--muted'), acc = css('--accent'), line = css('--line'), soft = css('--soft');
+    const th = amp * Math.cos(phase);
+    // 視覺尺度：緞帶寬度放大，讓 0.6～4 cm 都看得清楚
+    const cx = W / 2, top = 34, Lv = Math.min(H - 120, 230), half = Math.min(W * 0.36, 170);
+    const wv = 24 + (cur.w - 0.006) / (0.04 - 0.006) * (Math.min(half * 1.5, Lv * 0.75) - 24), a = wv / 2;
+    const depth = 0.32; // 斜視投影：深度方向壓縮
+    // 下端兩點繞中軸轉 θ；線長固定，所以水平位移越大，下端越往上抬
+    const bx = a * Math.cos(th), by = a * Math.sin(th);
+    const horiz = Math.hypot(bx - a, by);
+    const drop = Math.sqrt(Math.max(Lv * Lv - horiz * horiz, 0));
+    const zb = top + drop, rise = Lv - drop;
+    const P = (x, y, z) => [cx + x, z + y * depth];
+    // 支撐架
+    ctx.fillStyle = mut; ctx.fillRect(cx - half - 10, top - 14, (half + 10) * 2, 10);
+    // 原本的位置（虛線）
+    ctx.strokeStyle = line; ctx.setLineDash([4, 5]); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx - a, top); ctx.lineTo(cx - a, top + Lv); ctx.moveTo(cx + a, top); ctx.lineTo(cx + a, top + Lv); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(cx, top + Lv, half, half * depth, 0, 0, 2 * PI); ctx.stroke(); ctx.setLineDash([]);
+    // 緞帶面：兩條邊緣與上下端圍成的面
+    const tl = P(-a, 0, top), tr = P(a, 0, top), bl = P(-bx, -by, zb), br = P(bx, by, zb);
+    ctx.fillStyle = acc; ctx.globalAlpha = 0.18;
+    ctx.beginPath(); ctx.moveTo(...tl); ctx.lineTo(...tr); ctx.lineTo(...br); ctx.lineTo(...bl); ctx.closePath(); ctx.fill();
+    ctx.globalAlpha = 1; ctx.strokeStyle = acc; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(...tl); ctx.lineTo(...bl); ctx.moveTo(...tr); ctx.lineTo(...br); ctx.stroke();
+    // 鋅棒
+    const rx = half * Math.cos(th), ry = half * Math.sin(th);
+    const r1 = P(-rx, -ry, zb), r2 = P(rx, ry, zb);
+    ctx.strokeStyle = mut; ctx.lineWidth = 10; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(...r1); ctx.lineTo(...r2); ctx.stroke(); ctx.lineCap = 'butt';
+    ctx.fillStyle = acc; [bl, br].forEach(p => { ctx.beginPath(); ctx.arc(p[0], p[1], 4, 0, 2 * PI); ctx.fill(); });
+    // 上升高度標示
+    const yb = top + Lv;
+    if (rise > 1.5) {
+      ctx.strokeStyle = ink; ctx.lineWidth = 1.2;
+      const xm = cx + half + 22;
+      ctx.beginPath(); ctx.moveTo(xm, yb); ctx.lineTo(xm, zb); ctx.moveTo(xm - 5, zb); ctx.lineTo(xm + 5, zb); ctx.moveTo(xm - 5, yb); ctx.lineTo(xm + 5, yb); ctx.stroke();
+      ctx.fillStyle = ink; ctx.font = '12px ' + css('--mono'); ctx.textAlign = 'right'; ctx.fillText('Δh', xm - 8, (yb + zb) / 2 + 4); ctx.textAlign = 'left';
+    }
+    ctx.fillStyle = mut; ctx.font = '12px ' + css('--mono');
+    ctx.fillText('θ = ' + Math.round(th * 180 / PI) + '°', 10, H - 12);
+    ctx.textAlign = 'right'; ctx.fillText((slow ? '慢動作 ×1/5' : '真實速度') + ' · T = ' + cur.T + ' s', W - 10, H - 12); ctx.textAlign = 'left';
+    $r('rTh').textContent = Math.round(th * 180 / PI) + '°';
+    const dhReal = L * (1 - Math.cos(Math.asin(Math.min(1, cur.w * Math.abs(Math.sin(th / 2)) / L))));
+    $r('rDh').textContent = (dhReal * 1000).toFixed(dhReal * 1000 < 1 ? 3 : 2) + ' mm';
+  }
+  function loop(now) {
+    if (!playing) return;
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    { phase += 2 * PI * dt / cur.T / (slow ? 5 : 1); draw(); }
+    requestAnimationFrame(loop);
+  }
+  readout(); table();
+  new ResizeObserver(() => draw()).observe(cv);
+  if (playing) requestAnimationFrame(loop); else draw();
+})();
+</script>
+</body>
+</html>
