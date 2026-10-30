@@ -14,9 +14,10 @@
 
 | 路徑 | 內容 |
 | --- | --- |
-| `index.html` | 主站：全站搜尋、分頁列，以及目前進度、比賽專區、版本紀錄、分析筆記、原始檔、更新紀錄六個分頁 |
+| `index.html` | 主站：全站搜尋、分頁列，以及目前進度、比賽專區、版本紀錄、分析筆記、原始檔、更新紀錄六個分頁，以及「緞帶」專題分頁（`id="view-ribbon"`，含互動動畫） |
 | `contests/*.json` | 比賽專區的資料，一場比賽一個檔案 |
 | `contests/index.json` | 所有比賽檔名的清單（備援用，見下方） |
+| `assets/` | 圖片，例如 `fig7-double-wire.png`（雙線並列扭轉示意圖） |
 | `pages/wiretwist.html` | WireTwist Lab 研究網站（分頁內嵌） |
 | `pages/kappa.html` | kappa 扭客研究網站（分頁內嵌） |
 | `docs/*.pdf` | 三份說明書原始檔：`yongping.pdf`、`ntpc.pdf`、`macronix.pdf` |
