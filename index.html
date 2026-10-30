@@ -341,11 +341,20 @@ dl.facts dt{color:var(--muted)}dl.facts dd{margin:0;min-width:0}
       <div class="card"><span class="k">v2 · 18 頁 · 1.7 MB</span><h3>新北市科展作品說明書</h3><p>線材種類與並列方式對扭擺扭力係數之影響研究</p><a class="btn" href="docs/ntpc.pdf" target="_blank" rel="noopener">開啟 PDF</a></div>
       <div class="card"><span class="k">v3 · 22 頁 · 1.1 MB</span><h3>旺宏科學獎創意說明書</h3><p>SA25-782</p><a class="btn" href="docs/macronix.pdf" target="_blank" rel="noopener">開啟 PDF</a></div>
     </div>
+    <h2>115 學年度永平高中科展資料</h2>
+    <div class="cards">
+      <div class="card"><span class="k">3 頁 · PDF</span><h3>115 學年度科學展覽實施辦法</h3><p>115-1-科學展覽實施辦法-永平</p><a class="btn" href="docs/yphs-115-rules.pdf" target="_blank" rel="noopener">開啟 PDF</a></div>
+      <div class="card"><span class="k">Word</span><h3>科展作品說明書格式</h3><p>115-1-科展作品說明書格式-永平</p><a class="btn" href="docs/yphs-115-format.docx" download>下載 Word 檔</a></div>
+    </div>
   </section>
 
   <section class="view pane" id="view-changelog" hidden>
     <h2>更新紀錄</h2>
     <p>這個網站本身的修改紀錄。</p>
+    <div class="entry">
+      <div class="top"><span class="ver">2026-10-30</span><h3>新增比賽：115 學年度永平高中科學展覽會</h3></div>
+      <ul><li>比賽專區新增一張卡片：重要時程、說明書格式、評審標準、獎勵與繳交表單</li><li>原始檔加入實施辦法（PDF）與作品說明書格式（Word）</li></ul>
+    </div>
     <div class="entry">
       <div class="top"><span class="ver">2026-10-30</span><h3>目前進度、比賽專區改用一般網站模板的版面</h3></div>
       <ul><li>目前進度改成一張張目標卡片，內容放在 data/status.json</li><li>比賽專區改成模板的卡片與「＋ 新增比賽」表單，每場比賽是 items/ 裡的一個 JSON 檔（取代原本的 contests/）</li><li>其他分頁維持原樣</li></ul>
@@ -642,7 +651,9 @@ function itemFromForm() {
         catch (e) { c = await fetch(`https://raw.githubusercontent.com/${REPO}/main/items/${n}`).then(r => r.json()); }
         c._file = n; return c;
       } catch (e) { return null; }
-    }))).filter(c => c && c.title).sort((a, b) => String(b.date).localeCompare(String(a.date)) || a._file.localeCompare(b._file));
+    }))).filter(c => c && c.title)
+      // 有日期的依日期由新到舊；「待補」之類沒有日期的排在後面
+      .sort((a, b) => { const d = c => /^\d/.test(c.date) ? c.date : ''; return d(b).localeCompare(d(a)) || a._file.localeCompare(b._file); });
   } catch (e) { items = []; }
   itemsLoaded = true;
   renderItemList();
