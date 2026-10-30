@@ -183,7 +183,10 @@ a.centry p{color:var(--muted);font-size:.95rem}
 .goal p{grid-column:2;margin:0;color:var(--muted);font-size:.9rem}
 .badge{font-size:.75rem;font-weight:600;border-radius:6px;padding:2px 8px;color:var(--panel);white-space:nowrap;background:var(--muted)}
 .badge.done{background:var(--ok)}.badge.blocked{background:var(--danger)}
-.badge.doing,.badge.registered,.badge.ongoing{background:var(--info)}
+.badge.doing,.badge.registered{background:var(--info)}
+/* 比賽狀態各用一色：準備中 灰框、已報名 藍、已繳交 橘、已結束 綠 */
+.badge.planning{background:none;color:var(--muted);border:1px dashed var(--muted)}
+.badge.ongoing{background:var(--accent)}
 ol.next{margin:0;padding-left:20px;display:grid;gap:4px}
 .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .toolbar p{margin:0;color:var(--muted)}
