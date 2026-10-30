@@ -196,6 +196,8 @@ ol.next{margin:0;padding-left:20px;display:grid;gap:4px}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 16px}
 .factions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
 #item-list{display:grid;gap:12px}
+#item-detail{margin-top:12px}
+#item-list a.item.sel{border-color:var(--accent)}
 a.item{display:block;color:inherit;text-decoration:none}
 a.item:hover{border-color:var(--accent)}
 a.item h3{margin:6px 0 2px;font-size:1.05rem}
@@ -582,21 +584,21 @@ function renderItemList() {
 }
 function renderItemDetail(id) {
   const el = $('item-detail'), c = items.find(x => itemId(x) === id);
-  if (!c) { el.innerHTML = `<a class="back" href="#contests">← 比賽專區</a>${itemsLoaded ? '<h2>找不到這場比賽</h2>' : '<p>正在載入…</p>'}`; return; }
+  document.querySelectorAll('#item-list a.item').forEach(a => a.classList.toggle('sel', a.getAttribute('href') === '#contest-' + id));
+  if (!c) { el.innerHTML = `${itemsLoaded ? '<h2>找不到這場比賽</h2>' : '<p>正在載入…</p>'}`; return; }
   const facts = Object.entries(c.facts || {}).map(([k, v]) => `<dt>${hEsc(k)}</dt><dd>${hEsc(v)}</dd>`).join('');
   const links = (c.links || []).filter(l => /^https?:\/\//.test(l.url));
-  el.innerHTML = `<a class="back" href="#contests">← 比賽專區</a>
-    <div style="margin-top:10px"><span class="badge ${hEsc(c.status)}">${hEsc(ITEM_STATUS[c.status] || c.status || '未設定')}</span></div>
+  el.innerHTML = `<div><span class="badge ${hEsc(c.status)}">${hEsc(ITEM_STATUS[c.status] || c.status || '未設定')}</span></div>
     <h2>${hEsc(c.title)}</h2>
     <dl class="facts"><dt>日期</dt><dd>${hEsc(c.date)}</dd>${c.result ? `<dt>結果</dt><dd>${hEsc(c.result)}</dd>` : ''}${facts}</dl>
     ${md(c.description)}
     ${links.length ? `<h3>相關連結</h3><ul>${links.map(l => `<li><a href="${hEsc(l.url)}" target="_blank" rel="noopener">${hEsc(l.title || l.url)}</a></li>`).join('')}</ul>` : ''}
     <p class="meta" style="margin-top:16px"><a href="https://github.com/${REPO}/edit/main/items/${encodeURIComponent(c._file)}" target="_blank" rel="noopener">在 GitHub 編輯這筆資料</a>（需登入專案帳號）</p>`;
 }
+// 與模板相同：清單一直顯示，點開的比賽詳細內容出現在清單下方
 function contestRoute(sub) {
-  $('contestHome').hidden = !!sub;
   $('item-detail').hidden = !sub;
-  if (sub) renderItemDetail(sub);
+  if (sub) { renderItemDetail(sub); requestAnimationFrame(() => $('item-detail').scrollIntoView({behavior:'smooth', block:'start'})); }
 }
 function itemFromForm() {
   const f = new FormData($('item-form'));
