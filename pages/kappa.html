@@ -110,6 +110,7 @@ footer{padding-block:32px 0;font-size:.85rem;color:var(--muted);display:grid;gap
   <div class="pend" aria-label="扭擺俯視模擬">
     <div class="label">扭擺俯視圖 · 實際週期</div>
     <canvas id="pend" width="400" height="400" role="img" aria-label="鋅棒繞懸線旋轉擺動的俯視動畫"></canvas>
+    <p style="margin:6px 0 0;font-size:.8rem;color:var(--muted)">示意動畫：依實驗步驟，先扭轉 90° 再放手（放手後振幅因阻尼漸小）</p>
     <div class="row" id="pendBtns"></div>
     <div class="readout"><span>週期 T = <b id="pT" class="num">0.6 s</b></span><span>κ = <b id="pK" class="num"></b> N·m/rad</span></div>
   </div>
@@ -287,8 +288,8 @@ pick(0);
 const cv = document.getElementById('pend'), cx = cv.getContext('2d');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 function draw(now){
-  const W=cv.width, c=W/2, amp=0.9;
-  const th = reduce.matches ? amp*0.6 : amp*Math.cos(2*Math.PI*((now-t0)/1000)/T);
+  const W=cv.width, c=W/2, amp=Math.PI/2; // 依實驗步驟：先扭轉 90° 再放手
+  const th = reduce.matches ? amp : amp*Math.cos(2*Math.PI*((now-t0)/1000)/T);
   cx.clearRect(0,0,W,W);
   cx.strokeStyle=css('--rule'); cx.lineWidth=1;
   cx.beginPath(); cx.arc(c,c,150,0,Math.PI*2); cx.stroke();

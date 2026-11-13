@@ -148,6 +148,7 @@ footer{padding-block:32px 48px;border-top:1px solid var(--line);font-size:.82rem
   </div>
   <div class="rig" aria-label="互動扭擺">
     <canvas id="rig" aria-hidden="true"></canvas>
+    <p style="margin:6px 0 0;font-size:.8rem;color:var(--muted)">示意動畫：依實驗步驟，先扭轉 90° 再放手（放手後振幅因阻尼漸小）</p>
     <div class="picker" id="picker" role="group" aria-label="選擇線材"></div>
     <div class="readout">
       <div>平均週期 T<b id="rT">–</b></div>
@@ -477,7 +478,7 @@ function frame(now) {
   if (cv.width !== W * dpr) { cv.width = W * dpr; cv.height = H * dpr; }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
   const ink = css('--ink'), mut = css('--muted'), cu = css('--copper'), line = css('--line');
-  const t = (now - t0) / 1000, th = reduce ? 0.9 : 1.1 * Math.cos(2 * PI * t / cur.T) * Math.exp(-t / (cur.T * 25));
+  const t = (now - t0) / 1000, th = reduce ? PI / 2 : PI / 2 * Math.cos(2 * PI * t / cur.T) * Math.exp(-t / (cur.T * 25));
   const cx = W / 2, top = 22, by = H - 70, half = Math.min(120, W / 2 - 8);
   ctx.strokeStyle = line; ctx.lineWidth = 1.5; ctx.strokeRect(cx - half, top - 8, half * 2, H - top - 8);
   ctx.fillStyle = mut; ctx.fillRect(cx - 40, top - 8, 80, 6);
