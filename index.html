@@ -431,7 +431,8 @@ dl.facts dt{color:var(--muted)}dl.facts dd{margin:0;min-width:0}
         <canvas id="ribbonCanvas" aria-label="緞帶扭擺動畫：兩側邊緣斜拉交叉，鋅棒隨扭轉上升"></canvas>
         <div class="rctl">
           <div class="rrow" role="group" aria-label="選擇緞帶寬度" id="ribbonPick"></div>
-          <label class="rslide" for="ribbonAmp">最大扭轉角 <b id="ribbonAmpV" class="mono">120°</b><input id="ribbonAmp" type="range" min="20" max="170" step="5" value="120"></label>
+          <label class="rslide" for="ribbonAmp">初始扭轉角 <b id="ribbonAmpV" class="mono">90°</b><input id="ribbonAmp" type="range" min="20" max="170" step="5" value="90"></label>
+          <small class="rnote" style="color:var(--muted);font-size:.8rem">示意動畫：依實驗步驟，先扭轉 90° 再放手（放手後振幅因阻尼漸小）；滑桿可改角度觀察。</small>
           <div class="rrow"><button type="button" class="ghost" id="ribbonPlay" aria-pressed="true">暫停</button><button type="button" class="ghost" id="ribbonSlow" aria-pressed="false">慢動作</button></div>
         </div>
       </div>
@@ -714,7 +715,7 @@ function itemFromForm() {
     const k = 4 * PI * PI * I / (T * T), kd = m * g * w * w / (4 * L), ks = G * Jeff(w) / L;
     return {id, w, T, k, kd, ks, rd:k / kd, rs:k / ks};
   });
-  let cur = R[2], amp = 120 * PI / 180, playing = !matchMedia('(prefers-reduced-motion: reduce)').matches, slow = false, phase = 0, last = performance.now();
+  let cur = R[2], amp = 90 * PI / 180, playing = !matchMedia('(prefers-reduced-motion: reduce)').matches, slow = false, phase = 0, last = performance.now();
   const $r = id => document.getElementById(id);
   const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 
